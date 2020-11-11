@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.support.SendResult
 import org.springframework.util.concurrent.ListenableFuture
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 
 @RestController
@@ -31,10 +34,18 @@ class SpringKotlinController {
         var obj = Offers();  //Obj definition in Kotlin. No new key word
         var status = obj.activateOffers()  /* Invoke method inside Offers class */
         var message = "Hello Customer, "
+        val currentTime = LocalDateTime.now()
 
         if (status.equals("Order-Submitted")){
-            message += "Your Order has moved to Submitted Status."
-        } else {
+            val deliveryTime = currentTime.plusHours(4)
+            val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+            val formatted = deliveryTime.format(formatter)
+            message += "Your Order has moved to Submitted Status. Your estimate delivery date and time is $formatted "
+        }
+        if (status.equals("Out-of-Stock-Failure")){
+            message += "Your Order submission failed because we ran out of stock."
+        }
+        if (status.equals("Order-Submission-Failure")) {
             message + "Your Order submission failed. Please try again."
         }
 
