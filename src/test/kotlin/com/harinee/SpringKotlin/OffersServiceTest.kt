@@ -43,5 +43,47 @@ class OffersServiceTest {
 
         assert(total == 1.1)
     }
+    
+    @Test
+    fun testValidateStockTrue() {
+        //Load mock data to frequency map
+        var frequencyMap = TreeMap<String, Double>()
+        frequencyMap["Apple"] = 7.0
+        frequencyMap["Orange"] = 2.0
+
+        var obj = Offers();
+        var stockBoolean = obj.validateStock(frequencyMap)
+
+
+        assert(stockBoolean)
+    }
+
+    @Test
+    fun testValidateAppleOutOfStock() {
+        //Load mock data to frequency map
+        var frequencyMap = TreeMap<String, Double>()
+        frequencyMap["Apple"] = 8.0
+        frequencyMap["Orange"] = 3.0
+
+        var obj = Offers();
+        var stockBoolean = obj.validateStock(frequencyMap)
+
+
+        assert(!stockBoolean)
+    }
+
+    @Test
+    fun testValidateOrangeOutOfStock() {
+        //Load mock data to frequency map
+        var frequencyMap = TreeMap<String, Double>()
+        frequencyMap["Apple"] = 3.0
+        frequencyMap["Orange"] = 8.0
+
+        var obj = Offers();
+        var stockBoolean = obj.validateStock(frequencyMap)
+
+
+        assert(!stockBoolean)
+    }
 
 }
