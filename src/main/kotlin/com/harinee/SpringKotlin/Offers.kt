@@ -11,6 +11,8 @@ class Offers {
     var total = 0.0
     val products = mutableListOf<String>()  /*Mutable so as to add elements to the list*/
     var orderStatus = "New"
+    val APPLE_STOCK_NUMBER = 7.0            /*Stock of Apples in our inventory*/
+    val ORANGE_STOCK_NUMBER = 7.0           /*Stock of Oranges in our inventory*/
     fun activateOffers(): String {
         productsMap["Apple"] = 0.60
         productsMap["Orange"] = 0.25
@@ -35,11 +37,18 @@ class Offers {
                 /*Collections.frequency returns of the count of elements in the list*/
                 frequencyMap.put(name, toDouble(Collections.frequency(products, name)))
             }
-            println()
-            println("Cart Summary")
-            total = calculateTotal(frequencyMap, productsMap)
-            println("The total amount of this transaction is $" +total)
-            orderStatus = "Order-Submitted"
+            var stockBoolean = validateStock(this.frequencyMap)
+            if(stockBoolean){
+                println()
+                println("Cart Summary")
+                total = calculateTotal(frequencyMap, productsMap)
+                println("The total amount of this transaction is $" +total)
+                orderStatus = "Order-Submitted"
+            }
+            else {
+                orderStatus = "Out-of-Stock-Failure"
+                println("Sorry we are out of stock !! Please make sure the qty of apples is ${APPLE_STOCK_NUMBER} and oranges is ${ORANGE_STOCK_NUMBER}")
+            }
         }
         else {
             orderStatus = "Order-Submission-Failure"
@@ -79,5 +88,24 @@ class Offers {
             }
         }
         return total
+    }
+
+    fun validateStock (freqMap : TreeMap<String, Double>) : Boolean{
+        var stockBoolean : Boolean = true
+        for ((k, v) in freqMap) {
+            if(k.equals("Apple")){
+                if(v > APPLE_STOCK_NUMBER) {
+                    stockBoolean = false
+                    break
+                }
+            }
+            if(k.equals("Orange")){
+                if(v > ORANGE_STOCK_NUMBER) {
+                    stockBoolean = false
+                    break
+                }
+            }
+        }
+        return stockBoolean
     }
 }
